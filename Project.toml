@@ -1,0 +1,17 @@
+name = "QuartoDocumenter"
+uuid = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
+authors = ["Joey Carpinelli <joey@loopy.codes>"]
+version = "0.1.0"
+
+[deps]
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
+Quarto = "d7167be5-f61b-4dc9-b75c-ab62374668c5"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

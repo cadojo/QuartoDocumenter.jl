@@ -1,0 +1,23 @@
+project:
+  type: book
+
+book:
+  title: "Doc"
+  author: "Norah Jones"
+  date: "4/7/2024"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+
