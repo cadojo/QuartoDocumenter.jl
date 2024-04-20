@@ -18,6 +18,7 @@ format:
     theme: cosmo
   pdf:
     documentclass: scrreprt
+    keep-md: true
 
 
 

@@ -1,3 +1,5 @@
 build/
 site/
 .quarto
+/.quarto/
+venv

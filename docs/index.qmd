@@ -4,12 +4,8 @@ This is a Quarto book.
 
 To learn more about Quarto books visit <https://quarto.org/docs/books>.
 
-```{julia}
-#| echo: false
-using Markdown
-markdowns = [@doc(names)]
-push!(markdowns, Markdown.MD(md"{{< pagebreak >}}", Markdown.MD(@doc(nameof))))
-push!(markdowns, Markdown.MD(md"{{< pagebreak >}}", Markdown.MD(@doc(Base.namemap))))
 
-Markdown.MD(markdowns)
+```{julia}
+using QuartoDocumenter, AstrodynamicalModels
+QuartoDocumenter.autodoc(AstrodynamicalModels)
 ```

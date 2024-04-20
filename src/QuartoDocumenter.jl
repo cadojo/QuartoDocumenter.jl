@@ -4,56 +4,86 @@ using Quarto
 using Markdown
 using InteractiveUtils
 
-function mcat(m1::Markdown.MD, m2::Markdown.MD; delimiter="{{< pagebreak >}}")
-    return Markdown.MD(m1, delimiter, m2)
+function autodoc(mod::Module, symbols::Symbol...; delimiter=md"{{< pagebreak >}}")
+    svec = isempty(symbols) ? Base.names(mod) : symbols
+    return Markdown.MD(map(name -> Markdown.MD(doc(mod, name), delimiter), svec)...)
 end
 
-function autodocs(mod::Module, lvalues...)
-    names = isempty(lvalues) ? Base.names(mod) : collect(lvalues)
-    return mapreduce(name -> doc(name), mcat, names)
-end
-
-macro autodocs(lvalues...)
+macro autodoc(lvalues...)
     return quote
-        autodocs(@__MODULE__, $(lvalues...))
+        autodoc(@__MODULE__, $(lvalues...))
     end
 end
 
 macro autodocs(lvalues)
     return quote
-        autodocs(@__MODULE__, $(lvalues)...)
+        autodoc(@__MODULE__, $(lvalues)...)
     end
 end
 
-function increase_header_levels(str::AbstractString)
-    lines = collect(eachline(IOBuffer(str)))
-    for index in CartesianIndices(lines)
-        line = lines[index]
-        words = split(line)
-        if !isempty(words)
-            word = first(words)
-            if word in ("###", "##", "#")
-                lines[index] = "###$(line)"
-            elseif word in ("####", "#####", "######")
-                lines[index] = "**$(lstrip(replace(line, word => "")))**"
-            end
+level(::Markdown.Header{T}) where {T} = T
+
+function process_headers(markdown)
+    for (index, item) in enumerate(markdown.content)
+        if item isa Markdown.Header
+            newlevel = min(level(item) + 3, 6)
+            markdown.content[index] = Markdown.Header{newlevel}(item.text)
+        elseif :content in propertynames(item)
+            markdown.content[index] = process_headers(item)
         end
     end
+    return markdown
+end
 
-    return join(lines, "\n")
+function process_admonitions(markdown)
+    for (index, item) in enumerate(markdown.content)
+        if item isa Markdown.Admonition
+            markdown.content[index] = Markdown.MD(
+                Markdown.parse(""":::{.callout-$(item.category) title="$(item.title)"}"""),
+                item.content...,
+                md":::",
+            )
+        elseif :content in propertynames(item)
+            markdown.content[index] = process_admonitions(item)
+        end
+    end
+    return markdown
+end
+
+function process_xref(markdown)
+    for (index, item) in enumerate(markdown.content)
+        if item isa Markdown.Link
+            markdown.content[index] = Markdown.MD(item.text)
+        elseif :content in propertynames(item)
+            markdown.content[index] = process_xref(item)
+        end
+    end
+    return markdown
 end
 
 function doc(mod::Module, sym::Symbol)
-    parent = parentmodule(getproperty(mod, sym))
-    docmkd = Base.Docs.doc(Docs.Binding(parent, symbol))
-    docstr = increase_header_levels(string(docmkd))
-    return Markdown.MD(docstr)
+    parent = which(mod, sym)
+    docmkd = Base.Docs.doc(Docs.Binding(parent, sym))
+    return doc(docmkd)
 end
 
 function doc(any::Any)
     docmkd = Base.Docs.doc(any)
-    docstr = increase_header_levels(string(docmkd))
-    return Markdown.MD(docstr)
+    return doc(docmkd)
+end
+
+function doc(md::Markdown.MD)
+    processed = (
+        md
+        |> process_headers
+        |> process_admonitions
+        |> process_xref
+    )
+    return Markdown.MD(
+        Markdown.parse(""":::{.callout appearance="simple"}"""),
+        processed,
+        md":::"
+    )
 end
 
 end # module QuartoDocumenter
