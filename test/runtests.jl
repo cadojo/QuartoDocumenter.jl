@@ -1,5 +1,5 @@
 #
-# Unit tests for QuartoDocumenter.jl
+# Unit tests for DocumenterQuarto.jl
 #
 
-using QuartoDocumenter
+using DocumenterQuarto

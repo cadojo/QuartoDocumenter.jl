@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       lookback:
-        default: 3
+        default: "3"
 permissions:
   actions: read
   checks: read
@@ -22,8 +22,7 @@ permissions:
   statuses: read
 jobs:
   TagBot:
-    if:
-      github.event_name == 'workflow_dispatch' || github.actor == 'JuliaTagBot'
+    if: github.event_name == 'workflow_dispatch' || github.actor == 'JuliaTagBot'
     runs-on: ubuntu-latest
     steps:
       - uses: JuliaRegistries/TagBot@v1

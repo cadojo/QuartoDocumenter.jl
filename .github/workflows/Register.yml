@@ -1,0 +1,16 @@
+name: Register
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Register Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            @JuliaRegistrator register"
+
+            This comment was generated with `commit-comment` and [`Register.yml`](/.github/workflows/Register.yml).

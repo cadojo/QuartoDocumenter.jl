@@ -1,0 +1,26 @@
+---
+number-depth: 2
+---
+
+# Reference
+
+_Docstrings for DocumenterQuarto._
+
+```{julia}
+#| echo: false
+#| output: false
+using DocumenterQuarto
+using DocumenterQuarto
+```
+
+```{julia}
+#| echo: false
+#| output: asis
+DocumenterQuarto.autodoc(DocumenterQuarto)
+```
+
+```{julia}
+#| echo: false
+#| output: asis
+DocumenterQuarto.doc(DocumenterQuarto.generate)
+```
