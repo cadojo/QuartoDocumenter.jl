@@ -3,3 +3,8 @@ site/
 .quarto
 /.quarto/
 venv
+_book
+_site
+_manuscript
+*.pdf
+*.html

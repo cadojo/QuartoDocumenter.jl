@@ -17,8 +17,8 @@ format:
   html:
     theme: cosmo
   pdf:
-    documentclass: scrreprt
-    keep-md: true
+    documentclass: article
+    shift-heading-level-by: 1
 
 
 
