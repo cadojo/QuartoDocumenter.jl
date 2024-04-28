@@ -1,11 +1,8 @@
-# Preface {.unnumbered}
+---
+title: "QuartoDocumenter.jl"
+sidebar: true
+---
 
-This is a Quarto book.
+This is a Quarto website.
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
-
-
-```{julia}
-using QuartoDocumenter, AstrodynamicalModels
-QuartoDocumenter.autodoc(AstrodynamicalModels)
-```
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.

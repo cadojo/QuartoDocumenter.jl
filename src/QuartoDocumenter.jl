@@ -15,7 +15,7 @@ macro autodoc(lvalues...)
     end
 end
 
-macro autodocs(lvalues)
+macro autodoc(lvalues)
     return quote
         autodoc(@__MODULE__, $(lvalues)...)
     end
@@ -27,12 +27,6 @@ function process_headers(markdown)
     for (index, item) in enumerate(markdown.content)
         if item isa Markdown.Header
             newlevel = min(level(item) + 3, 6)
-            if item.text isa AbstractVector
-                @info "Appending to item.text"
-                push!(item.text, " {.unnumbered} ")
-            elseif item.text isa AbstractString
-                item.text *= " {.unnumbered} "
-            end
             markdown.content[index] = Markdown.Header{newlevel}(item.text)
         elseif :content in propertynames(item)
             markdown.content[index] = process_headers(item)
@@ -76,6 +70,12 @@ function process(markdown)
     )
 end
 
+"""
+Return the documentation string associated with the provided name, with 
+substitutions to allow for compatibility with [Quarto](https://quarto.org).
+"""
+function doc end
+
 function doc(mod::Module, sym::Symbol)
     parent = which(mod, sym)
     docmkd = copy(Base.Docs.doc(Docs.Binding(parent, sym)))
@@ -83,25 +83,21 @@ function doc(mod::Module, sym::Symbol)
 end
 
 function doc(any::Any)
-    @info Base.Docs.doc(any) |> typeof
     docmkd = process(
         copy(Base.Docs.doc(any))
     )
 
     return Markdown.MD(
-        Markdown.parse(""":::{.callout appearance="simple"}"""),
+        Markdown.parse(
+            """
+            ## `$(nameof(any))`
+            :::{.callout-note appearance="simple"}
+            """
+        ),
         docmkd,
-        md":::"
-    )
-end
-
-function doc(mod::Module)
-    docmkd = process(
-        copy(Base.Docs.doc(mod))
-    )
-
-    return Markdown.MD(
-        docmkd
+        md"""
+        :::
+        """
     )
 end
 

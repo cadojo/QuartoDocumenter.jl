@@ -1,24 +1,40 @@
 project:
-  type: book
+  type: website
 
-book:
-  title: "Doc"
-  author: "Norah Jones"
-  date: "4/7/2024"
-  chapters:
-    - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+website:
+  title: "QuartoDocumenter.jl"
+  bread-crumbs: false
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+  sidebar:
+    search: true
+    contents:
+      - section: "Overview"
+        contents:
+          - index.qmd
+      - section: "Examples"
+        contents:
+          - examples/index.qmd
+      - section: "Reference"
+        contents:
+          - reference/index.qmd
 
-bibliography: references.bib
+execute: 
+  cache: false
+  freeze: false
+  echo: true
+  output: true
+  warning: false
 
 format:
   html:
-    theme: cosmo
-  pdf:
-    documentclass: article
-    shift-heading-level-by: 1
+    theme: 
+      light: lightly
+      dark: darkly
+    css: styles.css
+    toc: true
 
 
 

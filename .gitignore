@@ -28,3 +28,6 @@ Manifest.toml
 
 # As should .vscode!
 .vscode
+
+# Python virtual environments
+venv
