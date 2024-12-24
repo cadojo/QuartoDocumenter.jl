@@ -1,40 +1,22 @@
 project:
-  type: website
+  type: book
 
-website:
-  title: "QuartoDocumenter.jl"
-  bread-crumbs: false
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-  sidebar:
-    search: true
-    contents:
-      - section: "Overview"
-        contents:
-          - index.qmd
-      - section: "Examples"
-        contents:
-          - examples/index.qmd
-      - section: "Reference"
-        contents:
-          - reference/index.qmd
+book:
+  title: "DocumenterQuarto.jl"
+  author: "Joseph D Carpinelli"
+  date: "4/28/2024"
+  chapters:
+    - index.qmd
 
-execute: 
-  cache: false
-  freeze: false
-  echo: true
-  output: true
-  warning: false
+bibliography: references.bib
 
 format:
   html:
-    theme: 
-      light: lightly
-      dark: darkly
-    css: styles.css
-    toc: true
-
+    theme: darkly
+    number-depth: 2
+    toc-depth: 2
+  pdf:
+    documentclass: extarticle
+    classoption: 14pt
 
 

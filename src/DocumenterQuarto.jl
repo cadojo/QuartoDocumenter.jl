@@ -1,4 +1,4 @@
-module QuartoDocumenter
+module DocumenterQuarto
 
 using Quarto
 using Markdown

@@ -1,8 +1,13 @@
----
-title: "QuartoDocumenter.jl"
-sidebar: true
----
+# Reference
 
-This is a Quarto website.
+```{julia}
+#| echo: false
+#| output: false
+using DocumenterQuarto, AstrodynamicalModels
+```
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+```{julia}
+#| echo: false
+#| output: true
+DocumenterQuarto.autodoc(AstrodynamicalModels)
+```

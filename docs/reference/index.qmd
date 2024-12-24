@@ -1,7 +1,0 @@
-# Reference 
-
-```{julia}
-#| echo: false
-using QuartoDocumenter, AstrodynamicalModels
-QuartoDocumenter.autodoc(AstrodynamicalModels)
-```
