@@ -3,6 +3,134 @@ module DocumenterQuarto
 using Quarto
 using Markdown
 using InteractiveUtils
+import TOML
+using IOCapture
+using Git
+using Dates
+
+function generate(; title=nothing, type="book", api="api")
+
+    if isnothing(title)
+        if isfile("Project.toml")
+            name = TOML.parsefile("Project.toml")["name"]
+        else
+            name = nothing
+        end
+
+        title = isnothing(name) ? "Documentation" : name
+    end
+
+    docs = joinpath("docs")
+    isdir(docs) || let
+        mkdir(docs)
+        run(`julia -e 'import Pkg; Pkg.activate($docs); Pkg.add("DocumenterQuarto")'`)
+    end
+
+    _quarto = joinpath(docs, "_quarto.yml")
+
+    author = let
+        capture = IOCapture.capture() do
+            run(`$(git()) config user.name`)
+        end
+        strip(capture.output)
+    end
+
+    email = let
+        capture = IOCapture.capture() do
+            run(`$(git()) config user.email`)
+        end
+        strip(capture.output)
+    end
+
+    isfile(_quarto) || open(_quarto, "w") do io
+        write(
+            io,
+            """
+            project:
+            type: $type
+
+            $type:
+                title: "$title"
+                author: "$author"
+                email: "$email"
+                date: "$(today())"
+                chapters:
+                    - index.md
+                    $(isnothing(api) ? "" : "- api/index.qmd") 
+
+            bibliography: references.bib
+
+            format:
+                html:
+                    theme: cosmo
+                pdf:
+                    documentclass: extarticle
+            """
+        )
+    end
+
+    references = joinpath(docs, "references.bib")
+    isfile(references) || open(references, "w") do io
+        write(
+            io,
+            """
+            @software{Allaire_Quarto_2024,
+            author = {Allaire, J.J. and Teague, Charles and Scheidegger, Carlos and Xie, Yihui and Dervieux, Christophe},
+            doi = {10.5281/zenodo.5960048},
+            month = feb,
+            title = {{Quarto}},
+            url = {https://github.com/quarto-dev/quarto-cli},
+            version = {1.4},
+            year = {2024}
+            }
+            """
+        )
+    end
+
+    index = joinpath(docs, "index.md")
+
+    isfile(index) || open(index, "w") do io
+        write(
+            io,
+            """
+            # Overview
+
+            _To do: add a description of the project!_
+            """
+        )
+    end
+
+    if !isnothing(api)
+        api = joinpath("docs", "api")
+        isdir(api) || mkdir(api)
+
+        run(`julia -e 'import Pkg; Pkg.activate("docs"); Pkg.develop("$name")'`)
+
+        api = joinpath(api, "index.qmd")
+        isfile(api) || open(api, "w") do io
+            write(
+                io,
+                """
+                # API Reference
+
+                ```{julia}
+                #| echo: false
+                #| output: false
+                using DocumenterQuarto
+                using $name
+                ```
+
+                ```{julia}
+                #| echo: false
+                #| output: true
+                DocumenterQuarto.autodoc($name)
+                ```
+                """
+            )
+        end
+
+    end
+end
 
 function autodoc(mod::Module, symbols::Symbol...; delimiter=md"{{< pagebreak >}}")
     svec = isempty(symbols) ? Base.names(mod) : symbols
