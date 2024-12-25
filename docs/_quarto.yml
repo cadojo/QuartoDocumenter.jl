@@ -1,0 +1,24 @@
+project:
+    type: book
+
+book:
+    title: "DocumenterQuarto"
+    author: 
+        name: "Joey Carpinelli"
+        email: "joey@loopy.codes"
+    date: "2024-12-25"
+    chapters:
+        - index.md
+        - api/index.qmd 
+
+toc-title: "Table of Contents"
+
+execute:
+    echo: false
+    output: true
+
+bibliography: references.bib
+
+format:
+    html:
+        theme: darkly

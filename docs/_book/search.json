@@ -1,0 +1,42 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DocumenterQuarto",
+    "section": "",
+    "text": "1 Overview\nTo do: add a description of the project!",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#documenterquarto",
+    "href": "api/index.html#documenterquarto",
+    "title": "2  API Reference",
+    "section": "2.1 DocumenterQuarto",
+    "text": "2.1 DocumenterQuarto\n\n\n\n\n\n\nUtilities and templates for documenting your Julia package with Quarto!\n\n2.1.0.1 Exports\n\nautodoc\ndoc\n\n\n\n2.1.0.2 Imports\n\nBase\nCore\nDates\nDocStringExtensions\nGit\nIOCapture\nInteractiveUtils\nMarkdown\nQuarto",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>API Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#autodoc",
+    "href": "api/index.html#autodoc",
+    "title": "2  API Reference",
+    "section": "2.2 autodoc",
+    "text": "2.2 autodoc\n\n\n\n\n\n\nAutomatically process and return all documentation for all named fields.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>API Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#doc",
+    "href": "api/index.html#doc",
+    "title": "2  API Reference",
+    "section": "2.3 doc",
+    "text": "2.3 doc\n\n\n\n\n\n\nReturn the documentation string associated with the provided name, with substitutions to allow for compatibility with “Quarto”.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>API Reference</span>"
+    ]
+  }
+]

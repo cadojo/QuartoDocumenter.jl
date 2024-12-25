@@ -1,4 +1,16 @@
+"""
+Utilities and templates for documenting your Julia package with Quarto!
+
+# Exports
+$(EXPORTS)
+
+# Imports
+$(IMPORTS)
+
+"""
 module DocumenterQuarto
+
+export doc, autodoc
 
 using Quarto
 using Markdown
@@ -8,23 +20,38 @@ using IOCapture
 using Git
 using Dates
 
+using DocStringExtensions
+
+using DocStringExtensions
+@template (FUNCTIONS, METHODS, MACROS) = """
+                                         $(SIGNATURES)
+
+                                         $(DOCSTRING)
+                                         """
+
+@template (TYPES, CONSTANTS) = """
+                               $(TYPEDEF)
+
+                               $(DOCSTRING)
+                               """
+
+"""
+Generate a documentation site from a default template.
+"""
 function generate(; title=nothing, type="book", api="api")
 
+    name::Union{String,Nothing} = nothing
     if isnothing(title)
         if isfile("Project.toml")
             name = TOML.parsefile("Project.toml")["name"]
-        else
-            name = nothing
         end
 
         title = isnothing(name) ? "Documentation" : name
     end
 
-    docs = joinpath("docs")
-    isdir(docs) || let
-        mkdir(docs)
-        run(`julia -e 'import Pkg; Pkg.activate($docs); Pkg.add("DocumenterQuarto")'`)
-    end
+    docs::String = joinpath("docs")
+    isdir(docs) || mkdir(docs)
+
 
     _quarto = joinpath(docs, "_quarto.yml")
 
@@ -47,24 +74,29 @@ function generate(; title=nothing, type="book", api="api")
             io,
             """
             project:
-            type: $type
+                type: $type
 
             $type:
                 title: "$title"
-                author: "$author"
-                email: "$email"
+                author: 
+                    name: "$author"
+                    email: "$email"
                 date: "$(today())"
                 chapters:
                     - index.md
                     $(isnothing(api) ? "" : "- api/index.qmd") 
 
+            toc-title: "Table of Contents"
+
+            execute:
+                echo: false
+                output: true
+
             bibliography: references.bib
 
             format:
                 html:
-                    theme: cosmo
-                pdf:
-                    documentclass: extarticle
+                    theme: darkly
             """
         )
     end
@@ -75,13 +107,13 @@ function generate(; title=nothing, type="book", api="api")
             io,
             """
             @software{Allaire_Quarto_2024,
-            author = {Allaire, J.J. and Teague, Charles and Scheidegger, Carlos and Xie, Yihui and Dervieux, Christophe},
-            doi = {10.5281/zenodo.5960048},
-            month = feb,
-            title = {{Quarto}},
-            url = {https://github.com/quarto-dev/quarto-cli},
-            version = {1.4},
-            year = {2024}
+                author = {Allaire, J.J. and Teague, Charles and Scheidegger, Carlos and Xie, Yihui and Dervieux, Christophe},
+                doi = {10.5281/zenodo.5960048},
+                month = feb,
+                title = {{Quarto}},
+                url = {https://github.com/quarto-dev/quarto-cli},
+                version = {1.4},
+                year = {2024}
             }
             """
         )
@@ -104,7 +136,8 @@ function generate(; title=nothing, type="book", api="api")
         api = joinpath("docs", "api")
         isdir(api) || mkdir(api)
 
-        run(`julia -e 'import Pkg; Pkg.activate("docs"); Pkg.develop("$name")'`)
+        # TODO when registered, add 'Pkg.add("DocumenterQuarto")'
+        run(`julia -e 'import Pkg; Pkg.activate("docs"); Pkg.add("IJulia"); Pkg.develop(Pkg.PackageSpec(path="."))'`)
 
         api = joinpath(api, "index.qmd")
         isfile(api) || open(api, "w") do io
@@ -131,6 +164,11 @@ function generate(; title=nothing, type="book", api="api")
 
     end
 end
+
+"""
+Automatically process and return all documentation for all named fields.
+"""
+function autodoc end
 
 function autodoc(mod::Module, symbols::Symbol...; delimiter=md"{{< pagebreak >}}")
     svec = isempty(symbols) ? Base.names(mod) : symbols
@@ -219,7 +257,7 @@ function doc(any::Any)
         Markdown.parse(
             """
             ## `$(nameof(any))`
-            :::{.callout-note appearance="simple"}
+            :::{.callout appearance="minimal"}
             """
         ),
         docmkd,
