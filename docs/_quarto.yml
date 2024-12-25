@@ -16,6 +16,8 @@ toc-title: "Table of Contents"
 execute:
     echo: false
     output: true
+    cache: false
+    freeze: false
 
 bibliography: references.bib
 

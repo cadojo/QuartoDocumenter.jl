@@ -22,20 +22,9 @@ using Dates
 
 using DocStringExtensions
 
-using DocStringExtensions
-@template (FUNCTIONS, METHODS, MACROS) = """
-                                         $(SIGNATURES)
-
-                                         $(DOCSTRING)
-                                         """
-
-@template (TYPES, CONSTANTS) = """
-                               $(TYPEDEF)
-
-                               $(DOCSTRING)
-                               """
-
 """
+$(METHODLIST)
+
 Generate a documentation site from a default template.
 """
 function generate(; title=nothing, type="book", api="api")
@@ -91,6 +80,8 @@ function generate(; title=nothing, type="book", api="api")
             execute:
                 echo: false
                 output: true
+                cache: false
+                freeze: false
 
             bibliography: references.bib
 
@@ -132,12 +123,21 @@ function generate(; title=nothing, type="book", api="api")
         )
     end
 
+    project = joinpath(docs, "Project.toml")
+    isfile(project) || open(project, "w") do io
+        write(
+            io,
+            """
+            [deps]
+            DocumenterQuarto = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
+            IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+            """
+        )
+    end
+
     if !isnothing(api)
         api = joinpath("docs", "api")
         isdir(api) || mkdir(api)
-
-        # TODO when registered, add 'Pkg.add("DocumenterQuarto")'
-        run(`julia -e 'import Pkg; Pkg.activate("docs"); Pkg.add("IJulia"); Pkg.develop(Pkg.PackageSpec(path="."))'`)
 
         api = joinpath(api, "index.qmd")
         isfile(api) || open(api, "w") do io
@@ -166,6 +166,8 @@ function generate(; title=nothing, type="book", api="api")
 end
 
 """
+$(METHODLIST)
+
 Automatically process and return all documentation for all named fields.
 """
 function autodoc end
@@ -175,6 +177,11 @@ function autodoc(mod::Module, symbols::Symbol...; delimiter=md"{{< pagebreak >}}
     return Markdown.MD(map(name -> Markdown.MD(doc(getproperty(mod, name)), delimiter), svec)...)
 end
 
+"""
+$(METHODLIST)
+
+Automatically process and return documentation for all provided names.
+"""
 macro autodoc(lvalues...)
     return quote
         autodoc(@__MODULE__, $(lvalues...))
@@ -237,6 +244,8 @@ function process(markdown)
 end
 
 """
+$(METHODLIST)
+
 Return the documentation string associated with the provided name, with 
 substitutions to allow for compatibility with [Quarto](https://quarto.org).
 """
@@ -244,13 +253,13 @@ function doc end
 
 function doc(mod::Module, sym::Symbol)
     parent = which(mod, sym)
-    docmkd = copy(Base.Docs.doc(Docs.Binding(parent, sym)))
+    docmkd = Base.Docs.doc(Docs.Binding(parent, sym))
     return doc(docmkd)
 end
 
 function doc(any::Any)
     docmkd = process(
-        copy(Base.Docs.doc(any))
+        Base.Docs.doc(any)
     )
 
     return Markdown.MD(
