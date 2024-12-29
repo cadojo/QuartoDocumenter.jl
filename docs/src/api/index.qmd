@@ -1,0 +1,14 @@
+# API Reference
+
+```{julia}
+#| echo: false
+#| output: false
+using DocumenterQuarto
+using DocumenterQuarto
+```
+
+```{julia}
+#| echo: false
+#| output: true
+DocumenterQuarto.autodoc(DocumenterQuarto)
+```

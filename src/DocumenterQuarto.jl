@@ -40,8 +40,17 @@ function generate(; title=nothing, type="book", api="api")
     docs::String = joinpath("docs")
     isdir(docs) || mkdir(docs)
 
+    src::String = joinpath(docs, "src")
+    isdir(src) || mkdir(src)
 
-    _quarto = joinpath(docs, "_quarto.yml")
+    _quarto = joinpath(src, "_quarto.yml")
+
+    repo = let
+        capture = IOCapture.capture() do
+            run(`$(git()) remote get-url origin`)
+        end
+        strip(capture.output)
+    end
 
     author = let
         capture = IOCapture.capture() do
@@ -63,6 +72,7 @@ function generate(; title=nothing, type="book", api="api")
             """
             project:
                 type: $type
+                output-dir: ../build
 
             $type:
                 title: "$title"
@@ -86,12 +96,14 @@ function generate(; title=nothing, type="book", api="api")
 
             format:
                 html:
-                    theme: darkly
+                    theme:
+                        light: flatly
+                        dark: darkly
             """
         )
     end
 
-    references = joinpath(docs, "references.bib")
+    references = joinpath(src, "references.bib")
     isfile(references) || open(references, "w") do io
         write(
             io,
@@ -109,7 +121,7 @@ function generate(; title=nothing, type="book", api="api")
         )
     end
 
-    index = joinpath(docs, "index.md")
+    index = joinpath(src, "index.md")
 
     isfile(index) || open(index, "w") do io
         write(
@@ -128,6 +140,8 @@ function generate(; title=nothing, type="book", api="api")
             io,
             """
             [deps]
+            Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+            Quarto = "d7167be5-f61b-4dc9-b75c-ab62374668c5"
             DocumenterQuarto = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
             IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
             """
@@ -135,7 +149,7 @@ function generate(; title=nothing, type="book", api="api")
     end
 
     if !isnothing(api)
-        api = joinpath("docs", "api")
+        api = joinpath(src, "api")
         isdir(api) || mkdir(api)
 
         api = joinpath(api, "index.qmd")
@@ -163,6 +177,20 @@ function generate(; title=nothing, type="book", api="api")
 
     end
 
+    make = joinpath(docs, "make.jl")
+    isfile(make) || open(make, "w") do io
+        write(
+            io,
+            """
+            using Documenter
+            using Quarto
+
+            Quarto.render(joinpath(@__DIR__, "src"))
+
+            Documenter.deploydocs(repo = "$repo")
+            """
+        )
+    end
     return nothing
 end
 
@@ -226,14 +254,34 @@ function process_admonitions(markdown)
 end
 
 function process_xref(markdown)
-    for (index, item) in enumerate(markdown.content)
-        if item isa Markdown.Link
-            @warn item
-            markdown.content[index] = Markdown.MD(item.text)
-        elseif :content in propertynames(item)
-            @info item
-            markdown.content[index] = process_xref(item)
+    if :content in propertynames(markdown)
+        elements = markdown.content
+    else
+        elements = markdown.items
+    end
+
+    for (index, item) in enumerate(elements)
+        if item isa AbstractVector
+            elements[index] = process_xref.(item)
+        elseif item isa Markdown.Link
+            if occursin("@ref", item.url)
+                item.url = "#" * strip(
+                    replace(
+                        mapreduce(x -> string(Markdown.MD(x)), *, item.text),
+                        "`" => "",
+                    )
+                )
+                elements[index] = item
+            end
+        elseif :content in propertynames(item) || :items in propertynames(item)
+            elements[index] = process_xref(item)
         end
+    end
+
+    if :content in propertynames(markdown)
+        markdown.content = elements
+    else
+        markdown.items = elements
     end
     return markdown
 end
