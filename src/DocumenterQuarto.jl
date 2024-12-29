@@ -3,10 +3,6 @@ Utilities and templates for documenting your Julia package with Quarto!
 
 # Exports
 $(EXPORTS)
-
-# Imports
-$(IMPORTS)
-
 """
 module DocumenterQuarto
 
@@ -22,9 +18,12 @@ using Dates
 
 using DocStringExtensions
 
-"""
-$(METHODLIST)
+@template DEFAULT = """
+                    $(SIGNATURES)
+                    $(DOCSTRING)
+                    """
 
+"""
 Generate a documentation site from a default template.
 """
 function generate(; title=nothing, type="book", api="api")
@@ -163,24 +162,23 @@ function generate(; title=nothing, type="book", api="api")
         end
 
     end
+
+    return nothing
 end
 
 """
-$(METHODLIST)
-
-Automatically process and return all documentation for all named fields.
+Automatically process and return documentation for symbols in the provided 
+module. If no symbols are provided, all exported symbols are used. The 
+`delimiter` keyword argument is printed in between each documented name.
 """
-function autodoc end
-
 function autodoc(mod::Module, symbols::Symbol...; delimiter=md"{{< pagebreak >}}")
     svec = isempty(symbols) ? Base.names(mod) : symbols
     return Markdown.MD(map(name -> Markdown.MD(doc(getproperty(mod, name)), delimiter), svec)...)
 end
 
 """
-$(METHODLIST)
-
-Automatically process and return documentation for all provided names.
+Automatically process and return documentation for all provided names in the 
+current module.
 """
 macro autodoc(lvalues...)
     return quote
@@ -188,6 +186,10 @@ macro autodoc(lvalues...)
     end
 end
 
+"""
+Automatically process and return documentation for the iterable of provided
+names in the current module.
+"""
 macro autodoc(lvalues)
     return quote
         autodoc(@__MODULE__, $(lvalues)...)
@@ -199,7 +201,7 @@ level(::Markdown.Header{T}) where {T} = T
 function process_headers(markdown)
     for (index, item) in enumerate(markdown.content)
         if item isa Markdown.Header
-            newlevel = min(level(item) + 3, 6)
+            newlevel = min(level(item) + 2, 6)
             markdown.content[index] = Markdown.Header{newlevel}(item.text)
         elseif :content in propertynames(item)
             markdown.content[index] = process_headers(item)
@@ -226,8 +228,10 @@ end
 function process_xref(markdown)
     for (index, item) in enumerate(markdown.content)
         if item isa Markdown.Link
+            @warn item
             markdown.content[index] = Markdown.MD(item.text)
         elseif :content in propertynames(item)
+            @info item
             markdown.content[index] = process_xref(item)
         end
     end
@@ -244,19 +248,19 @@ function process(markdown)
 end
 
 """
-$(METHODLIST)
-
 Return the documentation string associated with the provided name, with 
 substitutions to allow for compatibility with [Quarto](https://quarto.org).
 """
-function doc end
-
 function doc(mod::Module, sym::Symbol)
     parent = which(mod, sym)
     docmkd = Base.Docs.doc(Docs.Binding(parent, sym))
     return doc(docmkd)
 end
 
+"""
+Return the documentation string associated with the provided value, with 
+substitutions to allow for compatibility with [Quarto](https://quarto.org).
+"""
 function doc(any::Any)
     docmkd = process(
         Base.Docs.doc(any)
