@@ -16,7 +16,7 @@ jobs:
           version: '1'
       - uses: quarto-dev/quarto-actions/setup@v2
       - name: Install Dependencies
-        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.build("IJulia")'
+        run: python -m pip install jupyter && julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.build("IJulia")'
       - name: Build and Deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
