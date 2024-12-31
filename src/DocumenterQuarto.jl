@@ -50,7 +50,7 @@ function generate(; title=nothing, type="book", api="api")
         capture = IOCapture.capture() do
             run(`$(git()) remote get-url origin`)
         end
-        strip(capture.output)
+        replace(strip(capture.output), ".git" => "", "https://" => "", "http://" => "", "www." => "")
     end
 
     author = let
