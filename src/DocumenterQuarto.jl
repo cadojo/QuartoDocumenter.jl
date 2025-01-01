@@ -254,7 +254,7 @@ function process_headers(markdown)
     for (index, item) in enumerate(markdown.content)
         if item isa Markdown.Header
             newlevel = min(level(item) + 2, 6)
-            markdown.content[index] = Markdown.Header{newlevel}(item.text * " {.unnumbered}")
+            markdown.content[index] = Markdown.Header{newlevel}(vcat(item.text, " {.unnumbered}"))
         elseif :content in propertynames(item)
             markdown.content[index] = process_headers(item)
         end
