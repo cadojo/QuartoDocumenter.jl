@@ -54,7 +54,47 @@
     "href": "api/index.html",
     "title": "2  Reference",
     "section": "",
-    "text": "Docstrings for DocumenterQuarto.\n#| echo: false\n#| output: false\nusing DocumenterQuarto\n#| echo: false\n#| output: asis\nDocumenterQuarto.doc(DocumenterQuarto.generate)\n#| echo: false\n#| output: asis\nDocumenterQuarto.autodoc(DocumenterQuarto)",
+    "text": "2.1 generate\nDocstrings for DocumenterQuarto.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#generate",
+    "href": "api/index.html#generate",
+    "title": "2  Reference",
+    "section": "",
+    "text": "generate(; title, type, api)\nGenerate a documentation site from a default template.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#documenterquarto",
+    "href": "api/index.html#documenterquarto",
+    "title": "2  Reference",
+    "section": "2.2 DocumenterQuarto",
+    "text": "2.2 DocumenterQuarto\n\n\n\n\n\n\nUtilities and templates for documenting your Julia package with Quarto!\n\nExports\n\nautodoc\ndoc",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#autodoc",
+    "href": "api/index.html#autodoc",
+    "title": "2  Reference",
+    "section": "2.3 autodoc",
+    "text": "2.3 autodoc\n\n\n\n\n\n\nautodoc(mod, symbols; delimiter)\nAutomatically process and return documentation for symbols in the provided module. If no symbols are provided, all exported symbols are used. The delimiter keyword argument is printed in between each documented name.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#doc",
+    "href": "api/index.html#doc",
+    "title": "2  Reference",
+    "section": "2.4 doc",
+    "text": "2.4 doc\n\n\n\n\n\n\ndoc(mod, sym)\nReturn the documentation string associated with the provided name, with substitutions to allow for compatibility with Quarto.\ndoc(any)\nReturn the documentation string associated with the provided value, with substitutions to allow for compatibility with Quarto.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]

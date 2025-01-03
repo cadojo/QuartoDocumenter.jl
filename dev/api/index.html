@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -127,8 +161,17 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#generate" id="toc-generate" class="nav-link active" data-scroll-target="#generate"><span class="header-section-number">2.1</span> <code>generate</code></a></li>
+  <li><a href="#documenterquarto" id="toc-documenterquarto" class="nav-link" data-scroll-target="#documenterquarto"><span class="header-section-number">2.2</span> <code>DocumenterQuarto</code></a></li>
+  <li><a href="#autodoc" id="toc-autodoc" class="nav-link" data-scroll-target="#autodoc"><span class="header-section-number">2.3</span> <code>autodoc</code></a></li>
+  <li><a href="#doc" id="toc-doc" class="nav-link" data-scroll-target="#doc"><span class="header-section-number">2.4</span> <code>doc</code></a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -153,17 +196,75 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><em>Docstrings for DocumenterQuarto.</em></p>
-<pre class="{julia}"><code>#| echo: false
-#| output: false
-using DocumenterQuarto</code></pre>
-<pre class="{julia}"><code>#| echo: false
-#| output: asis
-DocumenterQuarto.doc(DocumenterQuarto.generate)</code></pre>
-<pre class="{julia}"><code>#| echo: false
-#| output: asis
-DocumenterQuarto.autodoc(DocumenterQuarto)</code></pre>
+<section id="generate" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="generate"><span class="header-section-number">2.1</span> <code>generate</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">generate</span>(; title, <span class="kw">type</span>, api)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Generate a documentation site from a default template.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="documenterquarto" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="documenterquarto"><span class="header-section-number">2.2</span> <code>DocumenterQuarto</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Utilities and templates for documenting your Julia package with Quarto!</p>
+<section id="exports" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="exports">Exports</h3>
+<ul>
+<li><a href="#autodoc"><code>autodoc</code></a></li>
+<li><a href="#doc"><code>doc</code></a></li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="autodoc" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="autodoc"><span class="header-section-number">2.3</span> <code>autodoc</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autodoc</span>(mod, symbols; delimiter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Automatically process and return documentation for symbols in the provided module. If no symbols are provided, all exported symbols are used. The <code>delimiter</code> keyword argument is printed in between each documented name.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="doc" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="doc"><span class="header-section-number">2.4</span> <code>doc</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">doc</span>(mod, sym)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Return the documentation string associated with the provided name, with substitutions to allow for compatibility with <a href="https://quarto.org">Quarto</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">doc</span>(any)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Return the documentation string associated with the provided value, with substitutions to allow for compatibility with <a href="https://quarto.org">Quarto</a>.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
