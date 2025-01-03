@@ -155,14 +155,13 @@ ul.task-list li input[type="checkbox"] {
 <p><em>Docstrings for DocumenterQuarto.</em></p>
 <pre class="{julia}"><code>#| echo: false
 #| output: false
-using DocumenterQuarto
 using DocumenterQuarto</code></pre>
 <pre class="{julia}"><code>#| echo: false
 #| output: asis
-DocumenterQuarto.autodoc(DocumenterQuarto)</code></pre>
+DocumenterQuarto.doc(DocumenterQuarto.generate)</code></pre>
 <pre class="{julia}"><code>#| echo: false
 #| output: asis
-DocumenterQuarto.doc(DocumenterQuarto.generate)</code></pre>
+DocumenterQuarto.autodoc(DocumenterQuarto)</code></pre>
 
 
 
